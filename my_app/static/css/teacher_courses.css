@@ -1,0 +1,299 @@
+/* === 页面背景与字体设定 === */
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #6a69c7;
+  background-size: 400% 400%;
+  color: #333;
+}
+
+/* === 顶部导航栏 === */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f8f4fc;
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(110, 99, 165, 0.2);
+  border-bottom: 2px solid #eee;
+}
+
+.header .site-title {
+  font-size: 33px;
+  font-weight: bold;
+  color: #6259c9;
+  text-decoration: none;
+  padding-left: 1rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  padding-left: 1rem;
+}
+
+.site-title:hover {
+  transform: translateX(-5px);
+  color: #7a6cb3;
+}
+
+.button-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.logout-button, .back-button {
+  background-color: #7a6cb3;
+  color: white;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 3px 8px rgba(98, 89, 201, 0.2);
+}
+
+.header button:hover {
+  background-color: #5e54aa;
+  transform: translateY(-2px);
+}
+
+/* === 页面主容器 === */
+.container {
+  max-width: 1200px;
+  margin: 0px auto;
+  padding: 20px;
+  animation: fadeInSlideUp 1s ease-out forwards;
+}
+
+/* === 页面标题 === */
+.manage-title {
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 30px;
+  padding: 14px 24px;
+  border-radius: 12px;
+  margin-left: -100px;
+}
+
+/* === 学期/年份选择区域 === */
+.semester-year-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 30px;
+  padding: 10px;
+  background-color: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 12px rgba(122, 108, 179, 0.15);
+}
+
+.semester-year-container label {
+  font-weight: 600;
+  color: white;
+}
+
+.styled-dropdown {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: #f3f0ff;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  width: 120px;
+}
+
+.styled-dropdown:hover {
+  background-color: #e4ddff;
+}
+
+/* === 课程盒子区域 === */
+.my-courses-box {
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 6px 16px rgba(122, 108, 179, 0.2);
+  margin-bottom: 40px;
+}
+
+.my-courses-box h2 {
+  background: linear-gradient(135deg, #6a69c7, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 20px;
+  color: transparent;
+  border-bottom: 2px solid;
+  border-image: linear-gradient(to right, #6a69c7, #ffffff);
+  border-image-slice: 1;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  background-size: 300% auto;
+  background-position: left;
+  margin-top: 0px;
+  padding-bottom: 10px;
+}
+
+#course-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.course-item {
+  /* flex: 1 1 calc(33.333% - 24px); */
+  width: 310px;
+  height:130px;
+  min-width: 250px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 16px;
+  /* box-shadow: 0 4px 10px rgba(110, 99, 165, 0.08); */
+  box-shadow: 
+  0 4px 6px rgba(0,0,0,0.05), 
+  0 1px 3px rgba(0,0,0,0.04);
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.course-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(122, 108, 179, 0.2);
+}
+
+.course-item strong {
+  font-size: 19px;
+  font-weight: bold;
+  color: #6a69c7;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.course-details {
+  font-size: 14px;
+  color: #6a69c7;
+  margin-top: 5px;
+  font-size: 15px;
+  font-weight:600;
+}
+
+
+/* === 删除按钮 === */
+.delete-btn {
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  height: 35px;
+  width: 100px;
+}
+
+.delete-btn:hover {
+  background-color: #e74c3c;
+}
+
+
+.addcourse-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(to right, #7a6cb3, #8c7ae6);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.addcourse-btn:hover {
+  background: linear-gradient(to right, #685aaa, #7665d4);
+}
+
+/* === 页面渐入动画 === */
+@keyframes fadeInSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* === 添加课程按钮 === */
+.addcourse-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(to right, #ffffff, #e2e0ff);
+  color: #4a407a;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 10px;
+}
+
+.addcourse-btn:hover {
+  background: linear-gradient(to right, #e2e0ff, #ffffff);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.addcourse-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Optional: Add this to create a subtle glow effect on hover */
+.addcourse-btn:after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.addcourse-btn:hover:after {
+  opacity: 0.5;
+}

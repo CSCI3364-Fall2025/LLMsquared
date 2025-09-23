@@ -1,0 +1,712 @@
+.create-body {
+    background: #6a69c7;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    animation: fadeInUpp 0.5s ease-out;
+}
+
+.create-container {
+    width: 90%;
+    max-width: 1000px;
+    background-color: #fff;
+    margin: 40px auto;
+    border-radius: 16px;
+    padding-top: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 40px;
+    box-shadow: 0 0 20px rgba(94, 93, 187, 0.15);
+}
+
+@keyframes fadeInUpp {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+.create-page-title {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 30px;
+    color:rgb(103, 101, 101);
+}
+
+.create-top-btns {
+    text-align: right;   
+    margin-bottom: 20px;
+}
+
+.create-add-question-btn {
+    background-color: #7a6cb3;
+    color: white;
+    font-weight: bold;
+    padding: 15px 24px;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(122, 108, 179, 0.2);
+}
+
+.create-form {
+    width: 100%;
+}
+
+.create-title-box {
+    margin-bottom: 20px;
+}
+
+
+
+.create-bottom-btns {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+
+.quit-btn {
+    background-color: #ddd;
+    color: black;
+}
+
+.publish-btn {
+    background-color: #7a6cb3;
+    color: black;
+}
+
+
+/* Modal */
+.create-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    border: none;
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+
+  /* 淡入动画 */
+  .create-modal.fade-in {
+    animation: fadeInUp 0.4s ease forwards;
+  }
+  
+  /* 淡出动画 */
+  .create-modal.fade-out {
+    animation: fadeOut 0.3s forwards;
+  }
+  
+
+
+@keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -40%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+
+@keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  
+
+
+
+.create-modal h3 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #7a6cb3;
+    font-weight: bold;
+    padding-bottom: 15px;
+}
+
+.create-modal p {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.create-modal button {
+    padding: 10px 24px;
+    margin: 10px 8px;
+    font-size: 16px;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.create-modal button:first-of-type {
+    background-color: #7a6cb3;
+    color: white;
+}
+
+.create-modal button:last-of-type {
+    background-color: #e0e0e0;
+    color: black;
+}
+
+
+.create-title-wrapper {
+    margin-bottom: 20px;
+}
+
+.create-title-label {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.create-title-input {
+    width: 98%;
+    font-size: 30px;
+    padding: 0px 16px;
+    padding-left:0px;
+    border: none;
+    border-bottom: 5px solid #d7d7d7;
+    border-radius: 0;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.create-title-input:focus {
+    border-color: #7a6cb3;
+}
+
+.create-question-list {
+    margin: 20px 0;
+}
+
+.question-block {
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    box-shadow: 1px 6px 18px rgba(0, 0, 0, 0.28);
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    outline: none;
+}
+
+.question-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(122, 108, 179, 0.18);
+}
+
+.question-block label {
+    font-weight: 600;
+    font-size: 19px;
+    margin-bottom: 6px;
+    display: block;
+    color: #444;
+}
+
+.question-block input[type="text"] {
+    width: 100%;
+    font-size: 16px;
+    border:none;
+    border-color: #b0b0b0;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    margin-bottom: 18px;
+}
+
+/* .question-block input[type="text"]:focus {
+    border-color: #6353a0;
+    box-shadow: 0 0 0 3px rgba(164, 141, 252, 0.2);
+} */
+
+.question-block textarea {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 16px;
+    border-radius: 12px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    height: 60px;
+}
+
+/* .question-block textarea:focus {
+    border-color: #a48dfc;
+    box-shadow: 0 0 0 3px rgba(164, 141, 252, 0.2);
+} */
+
+.question-block .likert-scale {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #e0d8f5;
+}
+
+.question-block .likert-scale label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+}
+
+.question-block .likert-scale input[type="radio"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #bbb;
+    border-radius: 50%;
+    background-color: #fff;
+    transition: 0.2s ease;
+    cursor: pointer;
+}
+
+.question-block .likert-scale input[type="radio"]:disabled {
+    background-color: #dcd6f8;
+    border-color: #b49bff;
+}
+
+/* Delete Button */
+.question-block button {
+    width: 40px;
+    height: 40px;
+    background-color: rgb(255, 255, 255);
+    color: #8e8c8c;
+    border: 2px solid #68686887;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(183, 182, 182, 0.3);
+    padding: 0;
+    margin-left: 210px;
+}
+
+.question-block button svg {
+    width: 22px;
+    height: 22px;
+}
+
+.question-block button:hover {
+    background-color: #d11a2a;
+    color: white;
+    border-color: #d11a2a;
+    transform: scale(1.1);
+}
+
+
+.create-button-group {
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.create-btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 24px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    width: 120px;
+}
+
+.purple-btn {
+    background-color: #7a6cb3;
+    color: white;
+}
+
+.grey-btn {
+    background-color: #dcdcdc;
+    color: black;
+}
+
+.delete-btn {
+    background-color: #ff6f6f;
+    color: white;
+}
+
+.create-delete-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Likert Scale */
+.question-block .likert-scale {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding: 0 20px;
+}
+
+.question-block .likert-scale label {
+    font-weight: normal;
+    font-size: 14px;
+    margin-right: 6px;
+}
+
+.question-block .likert-scale input[type="radio"] {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #aaa;
+    border-radius: 50%;
+    background-color: #fff;
+    position: relative;
+    transition: border-color 0.2s;
+}
+
+.question-block .likert-scale input[type="radio"]:disabled {
+    background-color: #e8e8f9;
+    border-color: #b49bff;
+}
+
+
+#create-modal select,
+#create-modal select#create-question-type,
+#create-modal select#question-type,
+.create-modal select {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 16px;
+    font-weight: 550;
+    border-radius: 10px;
+    color: #333;
+    font-family: Arial, sans-serif;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D'12'%20height%3D'8'%20viewBox%3D'0%200%2012%208'%20xmlns%3D'http%3A//www.w3.org/2000/svg'%3E%3Cpath%20d%3D'M6%208L0%200h12L6%208z'%20fill%3D'%23666'%20/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    transition: border-color 0.3s ease;
+}
+
+.create-modal select:focus {
+    border-color: #7a6cb3;
+    box-shadow: 0 0 0 3px rgba(122, 108, 179, 0.2);
+}
+
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .create-add-icon {
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(122, 108, 179, 0.2);
+    fill: #7a6cb3;
+    transition: all 0.3s ease;
+    width: 50px;
+    height: 50px;
+}
+
+.create-add-icon:hover {
+    background-color: #7a6cb3;
+    border: none;
+}
+
+
+.create-add-icon:hover .icon-plus {
+    fill: white;
+}
+
+
+/* 所有按钮 hover、active、focus 状态
+.create-btn,
+.create-modal button {
+    transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.create-btn:hover,
+.create-modal button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.create-btn:active,
+.create-modal button:active {
+    transform: scale(0.98);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.create-btn:focus,
+.create-modal button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(122, 108, 179, 0.3);
+} */
+
+
+/* Button Hover and Active States */
+.create-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    transform-origin: center;
+    will-change: transform, box-shadow;
+}
+
+/* Publish Button Interaction */
+.purple-btn {
+    background-color: #7a6cb3;
+    color: white;
+    box-shadow: 0 4px 10px rgba(122, 108, 179, 0.3);
+    transition: all 0.3s ease;
+}
+
+.purple-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: all 0.5s ease;
+}
+
+.purple-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(122, 108, 179, 0.4);
+}
+
+.purple-btn:hover::before {
+    left: 100%;
+}
+
+.purple-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(122, 108, 179, 0.2);
+}
+
+/* Delete Button Interaction */
+.delete-btn {
+    background-color: #ff6f6f;
+    color: white;
+    box-shadow: 0 4px 10px rgba(255, 111, 111, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.delete-btn::after {
+    content: '⚠️';
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(255, 111, 111, 0.4);
+}
+
+.delete-btn:hover::after {
+    right: 10px;
+    opacity: 1;
+}
+
+.delete-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 5px rgba(255, 111, 111, 0.2);
+}
+
+/* Quit Button Interaction */
+.grey-btn {
+    background-color: #dcdcdc;
+    color: #333;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    will-change: transform, box-shadow;
+}
+
+.grey-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 6px 15px rgba(122, 108, 179, 0.15);
+    background-color: #e6e6e6;
+    color: #7a6cb3;
+}
+
+.grey-btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition-duration: 0.1s;
+}
+
+/* Modal Button Interactions */
+.create-modal button {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.create-modal button:first-of-type {
+    background-color: #7a6cb3;
+    color: white;
+    box-shadow: 0 4px 10px rgba(122, 108, 179, 0.3);
+}
+
+.create-modal button:last-of-type {
+    background-color: #e0e0e0;
+    color: #333;
+    box-shadow: 0 4px 10px rgba(224, 224, 224, 0.3);
+}
+
+.create-modal button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(122, 108, 179, 0.4);
+}
+
+.create-modal button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(122, 108, 179, 0.2);
+}
+
+/* Add Subtle Ripple Effect */
+.create-btn,
+.create-modal button {
+    position: relative;
+    overflow: hidden;
+}
+
+.create-btn::after,
+.create-modal button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 0;
+    height: 0;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+.create-btn:active::after,
+.create-modal button:active::after {
+    width: 200%;
+    height: 200%;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+
+/* input[disabled] {
+    background-color: transparent !important;
+} */
+
+input[disabled][type="text"],
+textarea[disabled] {
+    background-color: transparent !important;
+}
+
+@keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .question-block.animate-slide-in {
+    animation: slideInUp 0.7s ease forwards;
+  }
+
+  .likert-track-container {
+    position: relative;
+    width: 100%;
+    margin: 30px 0 10px;
+  }
+  
+  .likert-line {
+    position: absolute;
+    top: 12px;
+    left: 4%;
+    right: 7%;
+    height: 4px;
+    background-color: #ddd;
+    z-index: 0;
+    border-radius: 2px;
+  }
+  
+  .likert-progress {
+    height: 100%;
+    background: #7a6cb3;
+    width: 0%;
+    transition: width 0.4s ease-in-out;
+    border-radius: 2px;
+  }
+  
+  .likert-options {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .likert-options label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  
+  .likert-options input[type="radio"] {
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border: 2px solid #bbb;
+    border-radius: 50%;
+    background-color: #fff;
+    margin-bottom: 6px;
+    transition: border-color 0.2s ease;
+  }
+  
+  .likert-options input[type="radio"]:checked {
+    background-color: #7a6cb3;
+    border-color: #7a6cb3;
+  }
+  
+  .likert-options input[type="radio"].filled {
+    background-color: #7a6cb3;
+    border-color: #7a6cb3;
+  }
+  

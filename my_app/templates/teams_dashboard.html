@@ -1,0 +1,76 @@
+{% load static %}
+{% load dict_extras %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teams Page</title>
+    <link rel="stylesheet" href="{% static 'css/teams_dashboard.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+  <div class="header">
+    <!-- Assessmate title -->
+    <a href="{{ user_dashboard_url }}" class="site-title">
+      <i class="fas fa-graduation-cap"></i> Assessmate
+    </a>
+    <div class="button-container">
+      <button class="back-button" onclick="window.location.href='{% url 'teacher_dashboard' teacher.id %}'">
+        <i class="fas fa-arrow-left"></i>  Return
+      </button>
+      <button class="logout-button" onclick="window.location.href='/'">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="dashboard-container">
+      <h1 class="manage-title">Team Management - {{ selected_course }}</h1>
+
+      <div class="my-courses-box">
+        <h2>My Teams</h2>
+        <ul class="team-list">
+          {% for data in team_data %}
+            <li class="course-item">
+              {% comment %} <strong>{{ data.team.team_name }}</strong>
+              <strong>{{ data.member_count }} Members</strong>
+              <a href="{% url 'edit_team' teacher.id selected_course.id data.team.id %}">
+                <button class="edit-btn">Edit</button>
+              </a>
+              <form action="{% url 'delete_team' teacher.id selected_course.id data.team.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="edit-btn">Delete</button>
+              </form> {% endcomment %}
+
+              <strong>{{ data.team.team_name }}</strong>
+              <div class="member-count">{{ data.member_count }} Members</div>
+              <div class="button-group">
+                <a href="{% url 'edit_team' teacher.id selected_course.id data.team.id %}">
+                  <button class="edit-btn">Edit</button>
+                </a>
+                <form action="{% url 'delete_team' teacher.id selected_course.id data.team.id %}" method="post">
+                  {% csrf_token %}
+                  <button type="submit" class="edit-btn">Delete</button>
+                </form>
+              </div>
+
+            </li>
+          {% empty %}
+            <li>No teams created yet.</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <a href="{% url 'new_team' teacher.id selected_course.id %}">
+        <button class="addcourse-btn">Add New Team</button>
+      </a>
+    </div>
+  </div>
+</body>
+
+
+</html>

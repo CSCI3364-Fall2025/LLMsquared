@@ -1,0 +1,46 @@
+{% load static %}
+{% load dict_extras %}
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Page</title>
+    <link rel="stylesheet" href="{% static 'css/new_course.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <!-- Assessmate title -->
+        <a href="{{ user_dashboard_url }}" class="site-title">
+            <i class="fas fa-graduation-cap"></i> Assessmate
+        </a>
+        <div class="button-container">
+            <!--button class="back-button">Return</button-->
+            <button class="back-button" onclick="window.location.href='{% url 'teacher_courses' teacher.id %}'">
+                <i class="fas fa-arrow-left"></i> Return
+            </button>
+            <button class="logout-button" onclick="window.location.href='/'">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+      </div>
+
+    <div class="new-course-box">
+        <h3>Create a New Course</h3>
+        <form method="POST" action="{% url 'new_course' teacher.id %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Create Course</button>
+        </form>
+    </div>
+
+   
+        
+    
+
+
+</body>
+</html>

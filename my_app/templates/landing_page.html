@@ -1,0 +1,37 @@
+{% load static %}
+{% load dict_extras %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
+</head>
+<body>
+    <div class="container">
+        <!-- Left Section (60%) -->
+        <div class="left">
+            <h1>Welcome to Assessmate</h1>
+            <h2>Are you a student or a teacher?</h2>
+            <div class="buttons">
+                <a href="{% url 'google_login' %}?role=student" class="btn">I'm a student</a>
+                <a href="{% url 'google_login' %}?role=teacher" class="btn">I'm a teacher</a>
+            </div>
+        </div>
+        <!-- Right Section (40%) -->
+        <div class="right">
+            <img src="{% static 'images/landing-image.png' %}" alt="Teamwork Image">
+        </div>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("error") === "role_mismatch") {
+            alert("You have already registered as a student or teacher. Please log in using the correct role.");
+            window.history.replaceState(null, "", window.location.pathname); // 清除 ?error 参数
+        }
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Assessment Results</title>
+    <link rel="stylesheet" href="{% static 'css/teacher_view_results.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="header">
+        {% comment %} <button class="back-button" id="backButton" data-url="{% url 'assessment_dashboard' teacher.id %}">Return</button> {% endcomment %}
+        <button class="back-button" id="backButton" 
+            data-url="{% url 'assessment_dashboard' teacher.id %}?course_id={{ course.id }}">
+            Return
+        </button>
+    </div>
+    <script>
+        const backButton = document.getElementById('backButton');
+        if (backButton) {
+            backButton.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                if (url) {
+                    window.location.href = url;
+                } else {
+                    console.error('URL not found for back button.');
+                    window.history.back();
+                }
+            });
+        }
+    </script>
+ 
+    <div class="container">
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+        <h1>Results for {{ assessment.title }} - {{ course.course_name }}</h1>
+
+        <form method="get">
+            <label for="team-select">Select a team:</label>
+            <select name="team_id" id="team-select" onchange="this.form.submit()">
+                <option value="">-- Select a team --</option>
+                {% for team in teams %}
+                    <option value="{{ team.id }}" {% if selected_team and team.id == selected_team.id %}selected{% endif %}>
+                        {{ team.team_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <form method="post" action="{% url 'toggle_results_publish' %}" style="margin-top: 20px;">
+            {% csrf_token %}
+            <input type="hidden" name="assessment_id" value="{{ assessment.id }}">
+            <input type="hidden" name="course_id" value="{{ course.id }}">
+            <input type="hidden" name="teacher_id" value="{{ teacher.id }}">
+            {% if assessment.results_released %}
+                <input type="hidden" name="action" value="unpublish">
+                <button type="submit" class="unpublish-btn"> 🔒 Unpublish Results </button>
+            {% else %}
+                <input type="hidden" name="action" value="publish">
+                <button type="submit" class="publish-btn"> 📢 Publish Results </button>
+            {% endif %}
+        </form>
+
+
+        <hr>
+
+        {% if not selected_team %}
+            <p>Please select a team to view results.</p>
+        {% else %}
+
+            <h2>Members of {{ selected_team.team_name }}</h2>
+            <ul>
+                {% for member in team_members %}
+                     <li>
+                        <span>{{ member.name }} ({{ member.email }})</span>
+                        <a href="{% url 'teacher_student_detail' teacher.id course.id assessment.id selected_team.id member.id %}">View Results</a>
+                    </li>
+                {% empty %}
+                    <li>No members in this team.</li>
+                {% endfor %}
+            </ul>
+
+            <hr>
+
+
+            <h2>Team Performance Summary</h2>
+            <p><strong>Overall Rating:</strong> {{ profile_card.overall_rating }}/5</p>
+            <p><strong>Keywords:</strong> {{ profile_card.keywords|join:", " }}</p>
+            <p><strong>Summary:</strong> {{ profile_card.summary }}</p>
+            <p><strong>Suggestions:</strong> {{ profile_card.suggestions }}</p>
+
+            <h3>Team Radar Chart</h3>
+            <canvas id="radarChart" width="400" height="120"></canvas>
+
+            <hr>
+
+            <h2>Detailed Question Analysis</h2>
+            {% for item in detail_analyses %}
+                <div class="question-block">
+                    <h3>{{ item.question }} ({{ item.type }})</h3>
+                    <p><strong>Summary:</strong> {{ item.summary }}</p>
+                    <p><strong>Analysis:</strong> {{ item.analysis }}</p>
+                </div>
+                <hr>
+            {% empty %}
+                <p>No question analysis available.</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {% if selected_team %}
+        <script>
+            window.radarScores = {{ radar_scores|safe }};
+        </script>
+        <script src="{% static 'js/teacher_results_radar.js' %}"></script>
+    {% endif %}
+
+
+
+    {% if selected_team %}
+<script>
+    const selectedTeamId = "{{ selected_team.id }}";
+    const assessmentId = "{{ assessment.id }}";
+</script>
+
+
+<div id="chat-container">
+    <button id="open-chat-btn"> Chat</button>
+    <div id="chat-window">
+        <div id="chat-header">
+            <span>AI Assistant</span>
+            <button id="close-chat-btn">✖</button>
+        </div>
+        <div id="chat-messages"></div>
+        <textarea id="chat-input" placeholder="Please enter your question..."></textarea>
+        <button id="send-chat-btn">Send</button>
+    </div>
+</div>
+
+<script src="{% static 'js/teacher_chat.js' %}"></script>
+{% endif %}
+
+</body>
+</html>
+

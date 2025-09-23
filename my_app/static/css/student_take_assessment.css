@@ -1,0 +1,229 @@
+/* Base Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    height: 100%;
+    background: linear-gradient(135deg, #6a69c7, #8a89e7);
+    background-size: 400% 400%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 100px;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+    background-color: #fff;
+    color: #6259c9;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    box-shadow: 0 4px 12px rgba(98, 89, 201, 0.25);
+    border-bottom: 2px solid #eee;
+    z-index: 1000;
+}
+
+.site-title {
+    font-size: 33px;
+    color: #6259c9;
+    text-decoration: none;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    padding-left: 1rem;
+}
+
+.site-title:hover {
+    transform: translateX(-5px);
+    color: #7a6cb3;
+}
+
+.site-title i {
+    margin-right: 8px;
+}
+
+.welcome-text {
+    font-size: 24px;
+    color: #6259c9;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+#username {
+    font-weight: bold;
+}
+
+.button-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Nav Button */
+.nav-button {
+    background-color: #7a6cb3;
+    color: white;
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 3px 8px rgba(98, 89, 201, 0.2);
+}
+
+.nav-button:hover {
+    background-color: #5e54aa;
+    transform: translateY(-2px);
+}
+
+/* Container */
+.container {
+    background: #fff;
+    width: 90%;
+    max-width: 1000px;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.container h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #444;
+    text-align: center;
+}
+
+.subtext {
+    font-size: 18px;
+    color: #666;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Assessment Section */
+.assessment-section {
+    background-color: #f8f9ff;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+
+.assessment-section h3 {
+    font-size: 24px;
+    color: #6259c9;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.assessment-section h3::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 24px;
+    background-color: #6259c9;
+    margin-right: 12px;
+    border-radius: 4px;
+}
+
+/* List Items */
+.assessment-section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.assessment-section ul li {
+    background: #e4e2f2;
+    border-radius: 12px;
+    padding: 16px 24px;
+    margin-bottom: 14px;
+    font-size: 16px;
+    color: #333;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.assessment-section ul li:hover {
+    background: #d8d7eb;
+}
+
+.assessment-section ul li a {
+    background-color: #7a6cb3;
+    color: white;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(98, 89, 201, 0.2);
+    display: inline-flex;
+    align-items: center;
+}
+
+.assessment-section ul li a:hover {
+    background-color: #6259c9;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(98, 89, 201, 0.3);
+}
+
+.assessment-section ul li a i {
+    margin-right: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header {
+        padding: 12px 20px;
+        flex-direction: column;
+        gap: 10px;
+        height: auto;
+    }
+    
+    .welcome-text {
+        position: static;
+        transform: none;
+        margin: 10px 0;
+    }
+
+    .container {
+        padding: 25px;
+    }
+
+    .container h2 {
+        font-size: 28px;
+    }
+
+    .subtext {
+        font-size: 16px;
+    }
+}

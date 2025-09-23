@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assessment Results</title>
+    <link rel="stylesheet" href="{% static 'css/student_view_results.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="header">
+        <!-- Assessmate title -->
+        <a href="{{ user_dashboard_url }}" class="site-title">
+            <i class="fas fa-graduation-cap"></i> Assessmate
+        </a>
+        <div class="button-container">
+            <a href="{% url 'student_course_detail' student.id course.id %}" class="nav-button">
+                <i class="fas fa-arrow-left"></i> Return
+            </a>
+            <button class="nav-button" onclick="window.location.href='/'">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+
+
+
+
+<div class="container">
+    <h2>{{ assessment.title }} Results</h2>
+    <p><strong>Course:</strong> {{ course.course_number }} - {{ course.course_name }}</p>
+    <hr>
+    <h3>Likert Questions (Rating)</h3>
+    {% for result in likert_results %}
+        <div class="likert-block">
+            <p><strong>Question {{ forloop.counter }}: </strong>{{ result.question }}</p>
+            <ul>
+                <li>Your Average Score: 
+                    <strong>
+                        <span class="score-color score-{{ result.student_avg|floatformat:0 }}">{{ result.student_avg }}</span>
+                    </strong>
+                </li>
+                <li>Lowest in Team: 
+                    <span class="score-color score-{{ result.team_low|floatformat:0 }}">{{ result.team_low }}</span>
+                </li>
+                <li>Highest in Team: 
+                    <span class="score-color score-{{ result.team_high|floatformat:0 }}">{{ result.team_high }}</span>
+                </li>
+                <li>Team Mean: 
+                    <span class="score-color score-{{ result.team_mean|floatformat:0 }}">{{ result.team_mean }}</span>
+                </li>
+                
+            </ul>
+        </div>
+        <hr>
+    {% empty %}
+        <p>No Likert question results available.</p>
+    {% endfor %}
+
+    <h3>Open-ended Questions</h3>
+    {% for result in open_ended_results %}
+        <div class="open-block">
+            <p><strong>Question {{ open_question_start|add:forloop.counter0 }}:</strong> {{ result.question }}</p>
+            <ul>
+                {% for answer in result.answers %}
+                    <li>"{{ answer }}"</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <hr>
+    {% empty %}
+        <p>No open-ended answers available.</p>
+    {% endfor %}
+</div>
+</body>
+</html>
