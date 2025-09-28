@@ -14,6 +14,7 @@
 
 
 **IMPORTANT CHANGE**
+
 8. `pip install openai`
 9. `pip install dotenv`
 10. In the A-team folder, write a file called ".env". 
