@@ -43,6 +43,14 @@
 
 
 
+## Pytest
+1. Open virtual environment
+        `source venv/bin/activate`
+2. `pip install pytest`
+3. `pip install pytest pytest-django`
+
+
+
 
 
 
