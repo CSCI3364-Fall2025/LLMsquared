@@ -9,6 +9,3 @@ DATABASES = {
         "NAME": ":memory:",
     }
 }
-
-# # Optional: speed up hashing in tests
-# PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
