@@ -24,7 +24,9 @@ jobs:
       - name: Django checks
         env:
           DJANGO_SETTINGS_MODULE: peer_assessment.settings_test
+          OPENAI_API_KEY: "dummy"
         run: python manage.py check
+     
 
       - name: Run pytest
         env:
