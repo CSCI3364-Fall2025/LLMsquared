@@ -10,6 +10,10 @@ from my_app.models import Assessment, CourseMember
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), "default")
 
+def now():
+    # this is what the tests monkeypatch
+    return timezone.now()
+
 def send_12h_reminder():
     from my_app.models import Assessment
 
