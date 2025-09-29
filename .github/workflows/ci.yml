@@ -33,9 +33,19 @@ jobs:
           DJANGO_SETTINGS_MODULE: peer_assessment.settings_test
           PYTHONPATH: .
           OPENAI_API_KEY: "dummy"
+
+       - name: Run pytest (all tests in my_app/tests)
+        env:
+          DJANGO_SETTINGS_MODULE: peer_assessment.settings_test
+          PYTHONPATH: .
+          OPENAI_API_KEY: "dummy"
+        
+  
+
+        
         run: |
           which python
           python --version
           pip list | grep -E 'pytest|Django|pytest-django' || true
           python -c "import importlib; import os; print('DJANGO_SETTINGS_MODULE=', os.getenv('DJANGO_SETTINGS_MODULE')); importlib.import_module('peer_assessment.settings_test'); print('settings_test import OK')"
-          python -m pytest -vv -ra --maxfail=1
+          python -m pytest my_app/tests/ -vv -ra --maxfail=1
