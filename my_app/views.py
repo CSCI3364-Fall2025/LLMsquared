@@ -28,6 +28,10 @@ from google.auth.transport import requests as google_requests
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+from .openai_client import get_openai_client
+
+def some_view(request):
+    client = get_openai_client()
 
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
