@@ -49,6 +49,7 @@
         `source venv/bin/activate`
 2. `pip install pytest`
 3. `pip install pytest pytest-django`
+5. to run schedule pytest my_app/tests/scheduler_test.py -rs
 
 
 
