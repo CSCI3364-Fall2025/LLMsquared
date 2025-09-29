@@ -1,44 +1,38 @@
-# my_app/tests/scheduler_test.py
+
 import pytest
 from datetime import timedelta
 from django.utils import timezone
 
-def _make_user(UserModel, username, email, password="x"):
-    """
-    Create a user instance for whatever model CourseMember.user points to,
-    without assuming the manager exposes .create_user().
-    """
-    user = UserModel()
-    if hasattr(user, "username"):
-        user.username = username
-    if hasattr(user, "email"):
-        user.email = email
-    # If the model supports password hashing, use it; otherwise ignore.
-    if hasattr(user, "set_password"):
-        user.set_password(password)
-    elif hasattr(user, "password"):
-        user.password = password  # not hashed; OK for tests that don't auth
-    user.save()
-    return user
-
 @pytest.mark.django_db
 def test_send_12h_reminder_sends_to_all_course_members(monkeypatch):
+   
     import my_app.scheduler as sched
     fixed_now = timezone.now()
     monkeypatch.setattr(sched, "now", lambda: fixed_now)
 
-    from my_app.models import Course, Assessment, CourseMember
 
-    # Use the exact user model required by the FK
-    UserModel = CourseMember._meta.get_field("user").remote_field.model
+    from my_app.models import User, Course, CourseMember, Assessment
 
-    course = Course.objects.create(course_number="CS101")
-    u1 = _make_user(UserModel, "u1", "u1@example.com")
-    u2 = _make_user(UserModel, "u2", "u2@example.com")
-    CourseMember.objects.create(course=course, user=u1)
-    CourseMember.objects.create(course=course, user=u2)
+    # Teacher
+    teacher = User.objects.create(
+        email="teacher@example.com", name="Prof. T", role="teacher"
+    )
 
-    # Due in the 1-minute window
+    # Course
+    course = Course.objects.create(
+        course_number="CS101",
+        course_name="Intro to CS",
+        course_semester="Fall",
+        course_year="2025",
+        teacher=teacher,
+    )
+
+    s1 = User.objects.create(email="s1@example.com", name="S One", role="student")
+    s2 = User.objects.create(email="s2@example.com", name="S Two", role="student")
+    CourseMember.objects.create(course=course, user=s1)
+    CourseMember.objects.create(course=course, user=s2)
+
+    # Assessment due within the 1-minute window (your function’s window)
     Assessment.objects.create(
         title="HW1",
         course=course,
@@ -46,22 +40,25 @@ def test_send_12h_reminder_sends_to_all_course_members(monkeypatch):
         due_date=fixed_now + timedelta(seconds=30),
     )
 
+    # Stub email sending
     sent = []
     def fake_send_mail(subject, message, from_email, recipient_list, fail_silently):
-        sent.append({"subject": subject, "message": message, "to": list(recipient_list)})
+        sent.append(
+            {"subject": subject, "message": message, "from": from_email, "to": list(recipient_list)}
+        )
         return len(recipient_list)
 
-    # Stub actual email sending
     monkeypatch.setattr(sched, "send_mail", fake_send_mail)
 
-    # Act
+    # Act: call the actual job function
     sched.send_12h_reminder()
 
-    # Assert
+    # Assert: exactly one email, to all enrolled students
     assert len(sent) == 1
-    assert set(sent[0]["to"]) == {u1.email, u2.email}
+    assert set(sent[0]["to"]) == {"s1@example.com", "s2@example.com"}
     assert "[Assessmate] Reminder" in sent[0]["subject"]
     assert "HW1" in sent[0]["subject"]
+
 
 @pytest.mark.django_db
 def test_send_12h_reminder_skips_when_not_due_or_not_published(monkeypatch):
@@ -69,25 +66,34 @@ def test_send_12h_reminder_skips_when_not_due_or_not_published(monkeypatch):
     fixed_now = timezone.now()
     monkeypatch.setattr(sched, "now", lambda: fixed_now)
 
-    from my_app.models import Course, Assessment, CourseMember
+    from my_app.models import User, Course, CourseMember, Assessment
 
-    UserModel = CourseMember._meta.get_field("user").remote_field.model
+    teacher = User.objects.create(
+        email="teacher2@example.com", name="Prof. Z", role="teacher"
+    )
 
-    course = Course.objects.create(course_number="CS102")
-    user = _make_user(UserModel, "u3", "u3@example.com")
-    CourseMember.objects.create(course=course, user=user)
+    course = Course.objects.create(
+        course_number="CS102",
+        course_name="Data Structures",
+        course_semester="Fall",
+        course_year="2025",
+        teacher=teacher,
+    )
 
-    # Too far in the future
+    student = User.objects.create(email="s3@example.com", name="S Three", role="student")
+    CourseMember.objects.create(course=course, user=student)
+
+    # Case A: published but due too far in the future (> 1 minute)
     Assessment.objects.create(
-        title="HW2",
+        title="HW-Future",
         course=course,
         status="published",
         due_date=fixed_now + timedelta(hours=2),
     )
 
-    # Not published (even if within window)
+    # Case B: within the window but not published
     Assessment.objects.create(
-        title="HW3",
+        title="HW-Draft",
         course=course,
         status="draft",
         due_date=fixed_now + timedelta(seconds=30),
@@ -100,5 +106,6 @@ def test_send_12h_reminder_skips_when_not_due_or_not_published(monkeypatch):
     )
 
     sched.send_12h_reminder()
-    assert sent == []
 
+    # No emails should be sent in either case
+    assert sent == []
