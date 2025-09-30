@@ -2,14 +2,15 @@
 import pytest
 from datetime import timedelta
 from django.utils import timezone
-
+import my_app.scheduler as sched
+from my_app.models import User, Course, CourseMember, Assessment
 
 @pytest.mark.django_db
 def test_send_12h_reminder_sends_to_all_course_members(monkeypatch):
-   '''
-   Unit test that tests  scheduler.py. A published assessment due within the window 
-   triggers one mocked email to all enrolled students.
-   '''
+    '''
+    Unit test that tests  scheduler.py. A published assessment due within the window 
+    triggers one mocked email to all enrolled students.
+    '''
     import my_app.scheduler as sched
     fixed_now = timezone.now()
     monkeypatch.setattr(sched, "now", lambda: fixed_now)

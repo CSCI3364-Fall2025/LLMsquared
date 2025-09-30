@@ -13,7 +13,7 @@ DATABASES = {
 
 
 
-
+# for email in scheduler
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
 
