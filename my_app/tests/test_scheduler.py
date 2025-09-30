@@ -3,9 +3,13 @@ import pytest
 from datetime import timedelta
 from django.utils import timezone
 
+
 @pytest.mark.django_db
 def test_send_12h_reminder_sends_to_all_course_members(monkeypatch):
-   
+   '''
+   Unit test that tests  scheduler.py. A published assessment due within the window 
+   triggers one mocked email to all enrolled students.
+   '''
     import my_app.scheduler as sched
     fixed_now = timezone.now()
     monkeypatch.setattr(sched, "now", lambda: fixed_now)
@@ -50,10 +54,10 @@ def test_send_12h_reminder_sends_to_all_course_members(monkeypatch):
 
     monkeypatch.setattr(sched, "send_mail", fake_send_mail)
 
-    # Act: call the actual job function
+    # call the actual job function
     sched.send_12h_reminder()
 
-    # Assert: exactly one email, to all enrolled students
+    # exactly one email, to all enrolled students
     assert len(sent) == 1
     assert set(sent[0]["to"]) == {"s1@example.com", "s2@example.com"}
     assert "[Assessmate] Reminder" in sent[0]["subject"]
@@ -62,6 +66,11 @@ def test_send_12h_reminder_sends_to_all_course_members(monkeypatch):
 
 @pytest.mark.django_db
 def test_send_12h_reminder_skips_when_not_due_or_not_published(monkeypatch):
+    '''
+    Unit/behavioral test
+    Ensures no emails are sent if due date is outside the window 
+    or assessment is not published.
+    '''
     import my_app.scheduler as sched
     fixed_now = timezone.now()
     monkeypatch.setattr(sched, "now", lambda: fixed_now)
