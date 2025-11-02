@@ -45,3 +45,4 @@ typing_extensions==4.15.0
 tzlocal==5.3.1
 urllib3==2.5.0
 django-apscheduler>=0.6.2
+selenium==4.24.0
