@@ -14,7 +14,6 @@ from playwright.sync_api import sync_playwright
 
 
 
-
 # Create drivers per browser
 def _make_driver(browser_name: str):
     browser_name = browser_name.lower()
@@ -316,11 +315,12 @@ class TestBrowserUsability:
         assert dcl_ms <= threshold, f"[{level_config['name']}] DOMContentLoaded {dcl_ms:.0f}ms > {threshold}ms"
 
 # ---------- Playwright Safari (WebKit) Tests ----------
+HEADLESS = os.getenv("PW_HEADLESS", "1") == "1"   
 @pytest.mark.usefixtures("live_server")
 class TestSafariPlaywright:
     def test_safari_homepage_loads(self, live_server):
         with sync_playwright() as p:
-            browser = p.webkit.launch(headless=False)
+            browser = p.webkit.launch(headless=HEADLESS)
             page = browser.new_page()
             page.goto(live_server.url)
             assert page.title(), "Safari/WebKit should have a non-empty title"
@@ -328,7 +328,7 @@ class TestSafariPlaywright:
 
     def test_safari_layout_responsive(self, live_server):
         with sync_playwright() as p:
-            browser = p.webkit.launch(headless=False)
+            browser = p.webkit.launch(headless=HEADLESS)
             page = browser.new_page()
             page.goto(live_server.url)
             desktop_width = page.evaluate("document.body.clientWidth")
@@ -339,7 +339,7 @@ class TestSafariPlaywright:
 
     def test_safari_js_no_errors(self, live_server):
         with sync_playwright() as p:
-            browser = p.webkit.launch(headless=False)
+            browser = p.webkit.launch(headless=HEADLESS)
             page = browser.new_page()
             errors = []
             page.on("pageerror", lambda e: errors.append(str(e)))
