@@ -26,7 +26,11 @@ jobs:
           DJANGO_SETTINGS_MODULE: peer_assessment.settings_test
           OPENAI_API_KEY: "dummy"
         run: python manage.py check
-     
+        
+      - name: Install Playwright browsers
+        run: |
+          playwright install --with-deps
+
 
       - name: Run pytest (my_app/tests + tests)
         env:
@@ -34,8 +38,7 @@ jobs:
           PYTHONPATH: .
           OPENAI_API_KEY: "dummy"
 
-  
-
+      
         
         run: |
           which python
