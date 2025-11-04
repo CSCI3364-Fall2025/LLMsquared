@@ -13,7 +13,6 @@ from django.db import transaction
 from playwright.sync_api import sync_playwright
 
 
-
 # Create drivers per browser
 def _make_driver(browser_name: str):
     browser_name = browser_name.lower()
@@ -99,31 +98,6 @@ def get_models():
 
 
 # Seeding helpers
-def _rand_team_splits(student_count, team_min, team_max, rng):
-    """
-    Split student_count into team sizes within [team_min, team_max].
-    Greedy with slight randomness; guarantees coverage.
-    """
-    sizes = []
-    remaining = student_count
-    while remaining > 0:
-        lo = max(team_min, min(team_max, 1))  # safety
-        hi = min(team_max, max(team_min, remaining))
-        size = rng.randint(lo, hi)
-        # Ensure we don't strand a remainder smaller than team_min unless it's the last team
-        if remaining - size != 0 and remaining - size < team_min:
-            size = remaining  # final team absorbs remainder
-        sizes.append(size)
-        remaining -= size
-    return sizes
-
-
-# LEVELS = {
-#     "L1": (150,  (30, 80),  (4, 8)),
-#     "L2": (700,  (30, 80),  (4, 6)),
-#     "L3": (2000, (30, 100), (4, 6)),
-# }
-
 def _ensure_seed_for_level(level_name: str):
     User, Course, CourseMember, Team, TeamMember = get_models()
     if not all([User, Course, CourseMember, Team, TeamMember]):
