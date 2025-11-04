@@ -10,6 +10,11 @@ from selenium.webdriver.common.keys import Keys
 from django.apps import apps
 from django.db import transaction
 
+from playwright.sync_api import sync_playwright
+
+
+
+
 # Create drivers per browser
 def _make_driver(browser_name: str):
     browser_name = browser_name.lower()
@@ -27,9 +32,10 @@ def _make_driver(browser_name: str):
                 opts.add_argument("--headless")
             return webdriver.Firefox(options=opts)
 
+        #will handle with playwright
         if browser_name == "safari":
-            # Safari WebDriver is only available on macOS with "Allow Remote Automation" enabled
-            return webdriver.Safari()
+            return None
+
     except Exception:
         # If driver missing, skip
         return None
@@ -38,16 +44,17 @@ def _make_driver(browser_name: str):
 
 # Pytest config 
 BROWSERS = ["google", "mozilla", "safari"]
+SELENIUM_BROWSERS = ["google", "mozilla"] 
 
-@pytest.fixture(params=BROWSERS, scope="class")
-def browser_name(request):
+@pytest.fixture(params=SELENIUM_BROWSERS, scope="class")
+def selenium_browser(request):
     return request.param
 
 @pytest.fixture(scope="class")
-def driver(browser_name):
-    drv = _make_driver(browser_name)
+def driver(selenium_browser):
+    drv = _make_driver(selenium_browser)
     if drv is None:
-        pytest.skip(f"WebDriver for {browser_name} not available or not configured.")
+        pytest.skip(f"WebDriver for {selenium_browser} not available or not configured.")
     yield drv
     drv.quit()
 
@@ -217,12 +224,12 @@ def seed_level_data(level_name, django_db_setup, django_db_blocker):
 
 # Tests 
 class TestBrowserUsability:
-    def test_homepage_loads_and_has_title(self, live_server, driver, browser_name, level_config):
+    def test_homepage_loads_and_has_title(self, live_server, driver, level_config):
         url = live_server.url + HOME_PATH
         driver.get(url)
         assert driver.title is not None and driver.title != ""
 
-    def test_layout_is_responsive_basic(self, live_server, driver, browser_name, level_config):
+    def test_layout_is_responsive_basic(self, live_server, driver, level_config):
         url = live_server.url + HOME_PATH
         driver.get(url)
         driver.set_window_size(1366, 800)
@@ -234,7 +241,7 @@ class TestBrowserUsability:
         width_mobile = driver.execute_script("return document.body.clientWidth;")
         assert width_desktop != width_mobile
 
-    def test_key_navigation_and_focus(self, live_server, driver, browser_name, level_config):
+    def test_key_navigation_and_focus(self, live_server, driver, level_config):
         url = live_server.url + HOME_PATH
         driver.get(url)
         body = driver.find_element(By.TAG_NAME, "body")
@@ -244,7 +251,7 @@ class TestBrowserUsability:
         after_tab = driver.switch_to.active_element
         assert start_active != after_tab
 
-    def test_form_submit_smoke(self, live_server, driver, browser_name, level_config):
+    def test_form_submit_smoke(self, live_server, driver, level_config):
         url = live_server.url + HOME_PATH
         driver.get(url)
         inputs = driver.find_elements(By.CSS_SELECTOR, FORM_INPUT_SELECTOR)
@@ -258,7 +265,7 @@ class TestBrowserUsability:
         ok = driver.find_elements(By.CSS_SELECTOR, SUCCESS_MARKER_SELECTOR)
         assert ok, "Expected success marker after form submit"
 
-    def test_no_obvious_js_errors_on_load(self, live_server, driver, browser_name, level_config):
+    def test_no_obvious_js_errors_on_load(self, live_server, driver, level_config):
         driver.get(live_server.url + HOME_PATH)
         driver.execute_script(
             """
@@ -272,7 +279,7 @@ class TestBrowserUsability:
         assert all("ReferenceError" not in e for e in errors), f"JS errors: {errors}"
 
     # Simple perf sanity for each level
-    def test_navigation_perf_is_reasonable_for_level(self, live_server, driver, browser_name, level_config):
+    def test_navigation_perf_is_reasonable_for_level(self, live_server, driver, level_config):
         """
         Uses PerformanceNavigationTiming if available; falls back to Navigation Timing.
         This doesn't replace real perf testing, but it flags obvious regressions as data scales.
@@ -308,3 +315,35 @@ class TestBrowserUsability:
         threshold = level_config["nav_threshold_ms"]
         assert dcl_ms <= threshold, f"[{level_config['name']}] DOMContentLoaded {dcl_ms:.0f}ms > {threshold}ms"
 
+# ---------- Playwright Safari (WebKit) Tests ----------
+@pytest.mark.usefixtures("live_server")
+class TestSafariPlaywright:
+    def test_safari_homepage_loads(self, live_server):
+        with sync_playwright() as p:
+            browser = p.webkit.launch(headless=False)
+            page = browser.new_page()
+            page.goto(live_server.url)
+            assert page.title(), "Safari/WebKit should have a non-empty title"
+            browser.close()
+
+    def test_safari_layout_responsive(self, live_server):
+        with sync_playwright() as p:
+            browser = p.webkit.launch(headless=False)
+            page = browser.new_page()
+            page.goto(live_server.url)
+            desktop_width = page.evaluate("document.body.clientWidth")
+            page.set_viewport_size({"width": 375, "height": 812})
+            mobile_width = page.evaluate("document.body.clientWidth")
+            assert desktop_width != mobile_width
+            browser.close()
+
+    def test_safari_js_no_errors(self, live_server):
+        with sync_playwright() as p:
+            browser = p.webkit.launch(headless=False)
+            page = browser.new_page()
+            errors = []
+            page.on("pageerror", lambda e: errors.append(str(e)))
+            page.goto(live_server.url)
+            page.wait_for_load_state("domcontentloaded")
+            assert not errors, f"JS errors: {errors}"
+            browser.close()
