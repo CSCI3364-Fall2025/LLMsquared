@@ -1,43 +1,54 @@
-
+# test_scheduler.py
+import os
 import pytest
 from datetime import timedelta
 from django.utils import timezone
-import my_app.scheduler as sched
+from django.core.management import call_command
+
 from my_app.models import User, Course, CourseMember, Assessment
 
+# Per-test dataset via seed command 
+@pytest.fixture(autouse=True)
+def seed_scheduler_dataset(django_db_blocker):
+    semester = os.environ.get("TEST_SEMESTER", "Fall")
+    year = os.environ.get("TEST_YEAR", "2025")
+
+    with django_db_blocker.unblock():
+        call_command(
+            "seed_data",
+            "--level", "1",
+            "--semester", semester,
+            "--year", year,
+            "--purge",
+        )
+    yield
+
+# Tests 
 @pytest.mark.django_db
 def test_send_12h_reminder_sends_to_all_course_members(monkeypatch):
-    '''
-    Unit test that tests  scheduler.py. A published assessment due within the window 
-    triggers one mocked email to all enrolled students.
-    '''
+    """
+    Integration-style test: uses seeded data from seed_data command.
+    Publishes an assessment due within the scheduler's window and verifies
+    one email is sent to all enrolled students in that course.
+    """
     import my_app.scheduler as sched
+
     fixed_now = timezone.now()
     monkeypatch.setattr(sched, "now", lambda: fixed_now)
 
+    # Use the first seeded course
+    course = Course.objects.first()
+    assert course is not None, "Seeded data missing a Course"
 
-    from my_app.models import User, Course, CourseMember, Assessment
-
-    # Teacher
-    teacher = User.objects.create(
-        email="teacher@example.com", name="Prof. T", role="teacher"
+    # Collect seeded course members' emails
+    emails = list(
+        CourseMember.objects.filter(course=course)
+        .select_related("user")
+        .values_list("user__email", flat=True)
     )
+    assert emails, "Seeded course has no students"
 
-    # Course
-    course = Course.objects.create(
-        course_number="CS101",
-        course_name="Intro to CS",
-        course_semester="Fall",
-        course_year="2025",
-        teacher=teacher,
-    )
-
-    s1 = User.objects.create(email="s1@example.com", name="S One", role="student")
-    s2 = User.objects.create(email="s2@example.com", name="S Two", role="student")
-    CourseMember.objects.create(course=course, user=s1)
-    CourseMember.objects.create(course=course, user=s2)
-
-    # Assessment due within the 1-minute window (your function’s window)
+    # Create an assessment due within the scheduler's 1-min window
     Assessment.objects.create(
         title="HW1",
         course=course,
@@ -45,43 +56,38 @@ def test_send_12h_reminder_sends_to_all_course_members(monkeypatch):
         due_date=fixed_now + timedelta(seconds=30),
     )
 
-    # Stub email sending
+    # Stub the email sender
     sent = []
+
     def fake_send_mail(subject, message, from_email, recipient_list, fail_silently):
-        sent.append(
-            {"subject": subject, "message": message, "from": from_email, "to": list(recipient_list)}
-        )
+        sent.append({"subject": subject, "to": list(recipient_list)})
         return len(recipient_list)
 
     monkeypatch.setattr(sched, "send_mail", fake_send_mail)
 
-    # call the actual job function
+    # Run the job
     sched.send_12h_reminder()
 
-    # exactly one email, to all enrolled students
+    # One email to all members
     assert len(sent) == 1
-    assert set(sent[0]["to"]) == {"s1@example.com", "s2@example.com"}
+    assert set(sent[0]["to"]) == set(emails)
     assert "[Assessmate] Reminder" in sent[0]["subject"]
     assert "HW1" in sent[0]["subject"]
 
 
 @pytest.mark.django_db
 def test_send_12h_reminder_skips_when_not_due_or_not_published(monkeypatch):
-    '''
-    Unit/behavioral test
-    Ensures no emails are sent if due date is outside the window 
-    or assessment is not published.
-    '''
+    """
+    No emails if (A) due date is outside the window or (B) assessment is not published.
+    Creates its own tiny objects alongside the seeded dataset.
+    """
     import my_app.scheduler as sched
+
     fixed_now = timezone.now()
     monkeypatch.setattr(sched, "now", lambda: fixed_now)
 
-    from my_app.models import User, Course, CourseMember, Assessment
-
-    teacher = User.objects.create(
-        email="teacher2@example.com", name="Prof. Z", role="teacher"
-    )
-
+    # Independent course/user so we don't depend on the large seed for this case
+    teacher = User.objects.create(email="teacher2@example.com", name="Prof. Z", role="teacher")
     course = Course.objects.create(
         course_number="CS102",
         course_name="Data Structures",
@@ -89,7 +95,6 @@ def test_send_12h_reminder_skips_when_not_due_or_not_published(monkeypatch):
         course_year="2025",
         teacher=teacher,
     )
-
     student = User.objects.create(email="s3@example.com", name="S Three", role="student")
     CourseMember.objects.create(course=course, user=student)
 
@@ -111,11 +116,11 @@ def test_send_12h_reminder_skips_when_not_due_or_not_published(monkeypatch):
 
     sent = []
     monkeypatch.setattr(
-        sched, "send_mail",
+        sched,
+        "send_mail",
         lambda *a, **k: sent.append({"to": list(k.get("recipient_list") or a[3])}),
     )
 
     sched.send_12h_reminder()
 
-    # No emails should be sent in either case
     assert sent == []
