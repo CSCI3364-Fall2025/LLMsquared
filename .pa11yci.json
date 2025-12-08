@@ -1,0 +1,14 @@
+
+{
+  "defaults": {
+    "standard": "WCAG2AA",
+    "wait": 1000,
+    "timeout": 30000,
+    "hideElements": ".admin, .debug-toolbar"
+  },
+  "urls": [
+    { "url": "http://localhost:8000/" },
+    { "url": "http://localhost:8000/courses/" },
+    { "url": "http://localhost:8000/assessments/" }
+  ]
+}
