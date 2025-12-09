@@ -40,7 +40,6 @@ jobs:
           python -c "import importlib; import os; print('DJANGO_SETTINGS_MODULE=', os.getenv('DJANGO_SETTINGS_MODULE')); importlib.import_module('peer_assessment.settings_test'); print('settings_test import OK')"
           python -m pytest my_app/tests/ -vv -ra --maxfail=1
       
-      # NEW: Security Testing
       - name: Start Django server for security tests
         env:
           DJANGO_SETTINGS_MODULE: peer_assessment.settings_test
