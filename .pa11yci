@@ -1,0 +1,18 @@
+{
+  "defaults": {
+    "chromeLaunchConfig": {
+      "executablePath": "/usr/bin/google-chrome-stable",
+      "args": [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu"
+      ]
+    },
+    "timeout": 30000,
+    "wait": 2000
+  },
+  "urls": [
+    "http://127.0.0.1:8000/"
+  ]
+}
