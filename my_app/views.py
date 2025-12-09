@@ -5,7 +5,7 @@ from django.utils.timezone import now
 import requests
 import urllib.parse
 from django.contrib.auth import login
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from .forms import CourseForm, TeamForm
 from django.utils import timezone
 import json
@@ -24,6 +24,7 @@ from django.contrib import messages
 
 from google.oauth2 import id_token as google_id_token
 from google.auth.transport import requests as google_requests
+
 
 
 load_dotenv()
@@ -1437,8 +1438,18 @@ def student_view_results(request, user_id, course_id, assessment_id):
 # Teacher Chat Bot with Memory (History)
 @csrf_exempt
 def teacher_chat(request):
+    # Check authentication first
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            "success": False, 
+            "message": "Authentication required."
+        }, status=401)
+    
     if request.method != "POST":
-        return JsonResponse({"success": False, "message": "请求方式错误。"})
+        return JsonResponse({
+            "success": False, 
+            "message": "请求方式错误。"
+        }, status=405)
 
     try:
         data = json.loads(request.body)
