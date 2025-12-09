@@ -1,26 +1,23 @@
 name: Django CI
-
 on:
   push:
     branches: [ main ]
   pull_request:
-
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-
       - name: Install deps
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
+          pip install requests  # For security tests
+      
       - name: Django checks
         env:
           DJANGO_SETTINGS_MODULE: peer_assessment.settings_test
@@ -30,19 +27,41 @@ jobs:
       - name: Install Playwright browsers
         run: |
           playwright install --with-deps
-
-
+      
       - name: Run pytest (my_app/tests + tests)
         env:
           DJANGO_SETTINGS_MODULE: peer_assessment.settings_test
           PYTHONPATH: .
           OPENAI_API_KEY: "dummy"
-
-      
-        
         run: |
           which python
           python --version
           pip list | grep -E 'pytest|Django|pytest-django' || true
           python -c "import importlib; import os; print('DJANGO_SETTINGS_MODULE=', os.getenv('DJANGO_SETTINGS_MODULE')); importlib.import_module('peer_assessment.settings_test'); print('settings_test import OK')"
           python -m pytest my_app/tests/ -vv -ra --maxfail=1
+      
+      # NEW: Security Testing
+      - name: Start Django server for security tests
+        env:
+          DJANGO_SETTINGS_MODULE: peer_assessment.settings_test
+          OPENAI_API_KEY: "dummy"
+        run: |
+          python manage.py migrate
+          python manage.py runserver &
+          sleep 5
+          curl http://127.0.0.1:8000/ || echo "Server starting..."
+          sleep 3
+      
+      - name: Run Security Tests
+        env:
+          DJANGO_SETTINGS_MODULE: peer_assessment.settings_test
+          PYTHONPATH: .
+          OPENAI_API_KEY: "dummy"
+        run: |
+          cd my_app/tests
+          python test_security.py
+      
+      - name: Stop Django server
+        if: always()
+        run: |
+          pkill -f "python manage.py runserver" || true
